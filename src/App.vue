@@ -1,17 +1,22 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <nav-bar />
+  <!-- <img alt="Vue logo" src="./assets/logo.png" /> -->
+  <router-view />
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import { defineAsyncComponent } from "vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    HelloWorld
-  }
-}
+    NavBar: defineAsyncComponent(() =>
+      import(
+        /* webpackChunkName: "NavBar" */ "../src/modules/shared/components/NavBar.vue"
+      )
+    ),
+  },
+};
 </script>
 
 <style>
