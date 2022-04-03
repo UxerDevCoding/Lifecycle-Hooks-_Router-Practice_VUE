@@ -1,45 +1,42 @@
-import { createRouter, createWebHashHistory } from "vue-router";
-
-// 2. Define some routes
-// Each route should map to a component.
-// We'll talk about nested routes later.
+import { createRouter, createWebHashHistory } from 'vue-router';
+import isAuthenticatedGuard from './auth.guard';
 
 const routes = [
   {
-    path: "/",
-    redirect: "/pokemon",
+    path: '/',
+    redirect: '/pokemon',
   },
 
   {
-    path: "/pokemon",
-    name: "pokemon",
+    path: '/pokemon',
+    name: 'pokemon',
     component: () =>
       import(
-        /* webpackChunkName: "PokemonLayout" */ "@/modules/pokemon/layouts/PokemonLayout"
+        /* webpackChunkName: "PokemonLayout" */ '@/modules/pokemon/layouts/PokemonLayout'
       ),
     children: [
       {
-        path: "home",
-        name: "pokemon-home",
+        path: 'home',
+        name: 'pokemon-home',
         component: () =>
           import(
-            /* webpackChunkName: "ListPage" */ "@/modules/pokemon/pages/ListPage"
+            /* webpackChunkName: "ListPage" */ '@/modules/pokemon/pages/ListPage'
           ),
       },
       {
-        path: "about",
-        name: "pokemon-about",
+        path: 'about',
+        name: 'pokemon-about',
         component: () =>
           import(
-            /* webpackChunkName: "AboutPage" */ "@/modules/pokemon/pages/AboutPage"
+            /* webpackChunkName: "AboutPage" */ '@/modules/pokemon/pages/AboutPage'
           ),
       },
       {
-        path: "pokemonid/:id",
-        name: "pokemon-id",
+        path: 'pokemonid/:id',
+        name: 'pokemon-id',
         component: () =>
           import(
-            /* webpackChunkName: "DetailPage" */ "@/modules/pokemon/pages/DetailPage"
+            /* webpackChunkName: "DetailPage" */ '@/modules/pokemon/pages/DetailPage'
           ),
         props: (route) => {
           const id = Number(route.params.id);
@@ -48,28 +45,95 @@ const routes = [
       },
       {
         path: '',
-        redirect: { name: "pokemon-about" },
+        redirect: { name: 'pokemon-home' },
       },
     ],
   },
 
   {
-    path: "/:pathMatch(.*)*",
+    path: 'dbz',
+    name: 'dbz',
+    beforeEnter: [isAuthenticatedGuard],
     component: () =>
       import(
-        /* webpackChunkName: "NoPageFound" */ "@/modules/shared/pages/NoPageFound"
+        /* webpackChunkName: "DragonBallLayout" */ '@/modules/dragonBall/layouts/DragonBallLayout'
+      ),
+    children: [
+      {
+        path: '/characters',
+        name: 'dbz-characters',
+        component: () =>
+          import(
+            /* webpackChunkName: "Characters" */ '@/modules/dragonBall/pages/Characters'
+          ),
+      },
+      {
+        path: '/about',
+        name: 'dbz-about',
+        component: () =>
+          import(
+            /* webpackChunkName: "About" */ '@/modules/dragonBall/pages/About'
+          ),
+      },
+      {
+        path: '',
+        redirect: { name: '/dbz-characters' },
+      },
+    ],
+  },
+
+  {
+    path: '/:pathMatch(.*)*',
+    component: () =>
+      import(
+        /* webpackChunkName: "NoPageFound" */ '@/modules/shared/pages/NoPageFound'
       ),
   },
 ];
 
-// 3. Create the router instance and pass the `routes` option
-// You can pass in additional options here, but let's
-// keep it simple for now.
-
 const router = createRouter({
-  // 4. Provide the history implementation to use. We are using the hash history for simplicity here.
   history: createWebHashHistory(),
-  routes, // short for `routes: routes`
+  routes,
 });
+
+// Guard Global - Síncrono
+// router.beforeEach( ( to, from, next ) => {
+//     // console.log({ to, from, next });
+
+    // const random = Math.random() * 100
+    // if( random > 50 ) {
+    //     console.log('autenticado')
+    //     next()
+    // } else {
+    //     console.log(random, 'bloqueado por el beforeEach Guard')
+    //     next({ name: 'pokemon-home' })
+    // }
+//     // next()
+// })
+
+// const canAccess = () => {
+//     return new Promise( resolve => {
+
+//         const random = Math.random() * 100
+//         if( random > 50 ) {
+//             console.log('Autenticado - canAccess')
+//             resolve(true)
+//         } else {
+//             console.log(random, 'bloqueado por el beforeEach Guard - canAccess')
+//             resolve(false)
+//         }
+
+//     })
+// }
+
+// router.beforeEach( async(to, from, next) => {
+
+//     const authorized = await canAccess()
+
+//     authorized 
+//         ? next()
+//         : next({ name: 'pokemon-home' })
+
+// })
 
 export default router;

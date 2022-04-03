@@ -1,6 +1,6 @@
 <template>
-  <nav-bar />
-  <!-- <img alt="Vue logo" src="./assets/logo.png" /> -->
+  <NavBar />
+  <img alt="Vue logo" src="./assets/logo.png" />
   <router-view />
 </template>
 
@@ -12,7 +12,7 @@ export default {
   components: {
     NavBar: defineAsyncComponent(() =>
       import(
-        /* webpackChunkName: "NavBar" */ "../src/modules/shared/components/NavBar.vue"
+        /* webpackChunkName: "NavBar" */ "./modules/shared/components/NavBar.vue"
       )
     ),
   },
